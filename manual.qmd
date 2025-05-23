@@ -14,7 +14,7 @@ format:
     embed-resources: true
 ---
 
-## Softwarová aplikace val4plan aaa
+## Softwarová aplikace val4plan
 
 Softwarová aplikace val4plan umožňuje na základě @fig-hedonicke-ceny dat parametrů nemovitostí, veřejných statků a cen nemovitostí odhadovat statisticky významné vlivy veřejných statků na cenu nemovitosti. Softwarová aplikace je open-source software distribuovaná pod licencí GPL3 a je volně dostupná na internetových stránkách [val4plan](http://val4plan.cz "http://val4plan.cz").
 
