@@ -1,0 +1,505 @@
+---
+title: "manual"
+
+crossref:
+  fig-title: Obr
+  fig-prefix: obr
+  
+format: 
+  html: 
+    toc: true
+    html-math-method: katex
+    css: styles.css
+    number-sections: true
+    embed-resources: true
+---
+
+## Softwarová aplikace val4plan
+
+Softwarová aplikace val4plan umožňuje na základě @fig-hedonicke-ceny dat parametrů nemovitostí, veřejných statků a cen nemovitostí odhadovat statisticky významné vlivy veřejných statků na cenu nemovitosti. Softwarová aplikace je open-source software distribuovaná pod licencí GPL3 a je volně dostupná na internetových stránkách [val4plan](http://val4plan.cz "http://val4plan.cz").
+
+![val4plan vyhodnocuje efekty jednotlivých charakteristik nemovitosti včetně charakteristick okolí na cenu nemovitosti.](images/hedonicke_ceny.png){#fig-hedonicke-ceny}
+
+### Funkcionalita
+
+Aplikace nabízí následující funkcionalitu:
+
+-   **načítání dat z externích zdrojů a jejich vstupní úpravu** (výběr vzorku dat pro zvolené území, výběr atributů, které jsou relevantní pro následné zpracování);
+
+-   **výpočet proměnných (metrik)**, které popisují okolí nemovitostí, včetně analyzovaných veřejných statků;
+
+-   **doplnění chybějících hodnot proměnných** vzorkováním (sampling) údajů z různě velkých okolí nemovitostí;
+
+-   **tvorba souborů bytů**, jak bytů nabízených na trhu nemovitostí, tak také syntetických bytů, které representují celý bytový fond: soubory nabízených bytů slouží k estimaci parametrů modelů a soubory syntetických bytů slouží k predikci efektů veřejných statků a jejich změn;
+
+-   **generování alternativních souborů syntetických bytů**, které odrážejí změny v poskytování veřejných statků;
+
+-   **estimace koeficientů modelů**, zobrazení jejich koeficientů a dalších parametrů, uložení estimovaných modelů na disk pro další využití, zejména pro predikci cen nemovitostí;
+
+-   **predikce dopadů změn v poskytování veřejných statků** a obecně změn charakteristik v okolí nemovitosti.
+
+### Způsoby využití (Use cases)
+
+Aplikace umožňuje:
+
+-   **odhadovat efekty veřejných statků**, případně jakékoli proměnné popisující území, na stávající nemovitosti i na jakkoli definované hypotetické nemovitosti. Aplikaci lze používat pro odhad ceny jak u stávající, tak také plánované výstavby;
+
+-   **odhadovat efekty změny poskytování veřejného statku**, případně jakékoli proměnné popisující území, na stávající nemovitosti nebo hypotetické (plánované) nemovitosti. Lze ověřovat jak počátek, tak také ukončení poskytování určitého veřejného statku (například vytvoření nového parku), případně marginální změny v kvalitě nebo rozsahu stávajícího nebo hypotetického veřejného statku (například rozšíření parku).
+
+### Vývoj
+
+Softwarová aplikace val4plan poskytuje robustní sadu nástrojů pro realizaci praktických ekonometrických analýz ověřování dopadů změn v prostředí. Koncepce otevřené, modulární aplikace umožňuje její další rozšiřování, zejména:
+
+-   přidávání dalších datových zdrojů a definici nových metrik;
+
+-   tvorbu nových typů modelů (dalších typů regresních analýz);
+
+-   tvorbu nástrojů vizualizace efektů změn veřejných statků.
+
+### Distribuce
+
+Aplikace je realizovaná v jazyce R a je distribuovaná pod licencí GPL3 ve formě R Package (R balíček) [val4plan](http://val4plan.cz "http://val4plan.cz"). Softwarový balíček je možné nainstalovat v prostředí UNIX (Linux), Windows a MacOS a spouštět po nainstalování volně dostupného interpretu jazyka [R](https://www.r-project.org/ "https://www.r-project.org/"). Distribuce ve formě R Package zajišťuje integritu jednotlivých částí programu s knihovnami, které program využívá (dependencies), se vstupními daty, které jsou pro program nezbytné a s dokumentací zdrojového kódu a uživatelským manuálem. Software je možné ovládat z příkazové řádky operačního systému nebo ze základního terminálu jazyka R (R Console). Po nainstalování balíčku je potřeba nastavit adresářovou strukturu pro ukládání vstupů a výstupů.
+
+### Vstupní data
+
+Software pracuje s rozsáhlou databází vstupních údajů, jejichž výčet a struktura jsou popsány dále v této e-příloze. Naprostá většina zdrojů poskytuje otevřená data. Využití některých zdrojů je ale omezeno licenčními podmínkami. Týká se to zejména dat o aktuálních cenách nemovitostí, které vlastní a spravují poradenské a realitní společnosti působící na trhu nemovitostí a dat Registru sčítacích obvodů, které spravuje Český statistický úřad. Řešitelé projektu mají veškerá data k dispozici, ostatní potenciální uživatelé se musí s vlastníky a správci dat dohodnout na podmínkách jejich využití.
+
+## Postup instalace software val4plan
+
+### Instalace R
+
+Pro spuštění softwarové aplikace je nutné nainstalovat interpret jazyka R. Spolu s tím je nainstalována i R Console, prostřednictvím které uživatel aplikaci ovládá. Pokud již máte R na vašem počítači naistalované, lze tento krok přeskočit. Dbejte ale na to, aby nainstalovaná verze R byla aktuální.
+
+Nejdříve si nainstalujte [R](https://www.r-project.org/ "https://www.r-project.org/"):
+
+1.  Jděte na download R, zvolte libovolný repozitář, ze kterého bude R stažen (například https://cloud.r-project.org/)
+
+2.  zvolte operační systém počítače, na kterém má být sotware nainstalován, například *Download R for Windows*)
+
+3.  Zvolte *Install R for the first time* a stáhněte si instalátor
+
+4.  Spusťte instalátor R (.exe soubor) a následujte instrukcí instalace
+
+Po instalaci spusťte naintalovaný program (např. R 4.4.1) a objeví s R Console.
+
+### Stažení balíčku *val4plan*
+
+Stáhněte si balíček [val4plan](http://val4plan.cz "http://val4plan.cz") z webových stránek projektu https://val4plan.cz a uložte jej na lokální disk.
+
+### Instalace balíčku *val4plan*
+
+Před instalací balíču nejdříve odstraníme stávající balíček (pokud je již nainstalovaný) pomocí následujícího příkladu zadaného do R Console:
+
+`remove.packages("val4plan")`
+
+Následujícím příkazem nainstalujeme knihovnu `devtools`, která slouží k instalaci balíčků:
+
+`install.packages("devtools")`
+
+a příkazem
+
+`library(devtools)`
+
+knihovnu načteme do paměti počítače.
+
+V dalším kroku instalujeme balíček `val4plan` do počítače. Cestu nastavíme dle uložení balíčku na vašem lokálním disku. Balíček automaticky stáhne všechny další R balíčky, které potřebuje ke své práci. Instalace může trvat deset i více minut. Použijte následující příkaz, ve kterém upravíte cestu k baličku:
+
+`devtools::install_local("D:\\Val4Plan\\software_balicek\\val4plan_0.1.0.tar.gz")`
+
+Nyní je software nainstalován.
+
+## Práce s *val4plan*
+
+### Vytvoření a nastavení projektu
+
+Balíček nejdříve nahrajte do paměti příkazem.
+
+`library(val4plan)`
+
+Tento příkaz je nutné provést po každém spuštění *R Console*. V prvním kroku je nutné nastavit cestu ke kořenovému adresáři projektu, ve kterém jsou umístěné pracovní adresáře, do kterých program ukládá data. Pokud pracujeme s více projekty, které mají oddělená data, potom lze tímto příkazem vytvořit pro každý projekt samostatný kořenový adresář. Cestu k adresáři upravte dle vámi zvoleného místa na disku.
+
+`set_path_to_data("D:\\Val4Plan\\testik")`
+
+V dalším kroku je nutné provést počáteční nastavení programu. Následujícím příkazem se nastaví adresářová struktura projektu, cesty k adresářům a logovací soubor `log.txt`:
+
+`init_default()`
+
+který vytvoří výchozí pracovní adresáře pro ukládání vstupních a výstupních dat v této struktuře [^1]:
+
+[^1]: Pokud se tyto adresáře v kořenovém adresáři již nacházejí, potom program žádné nové adresáře nevytvoří a stávající adresáře a jejich obsah bude zachován.
+
+```         
+kořenový adresář/
+  byty_orig/
+  verejne_statky_orig/
+  nabidky_byty/
+  synteticke_byty/
+  verejne_statky_stav/
+  verejne_statky_alt/
+  modely/
+  predikce/
+```
+
+Pro práci s modelem bude nutné do těchto adresářů vložit vstupní data (to za Vás program automaticky neudělá). Ukážeme si, která data by měly jednotlivé adresáře obsahovat.
+
+Adresář `byty_orig` obsahuje soubory údajů o bytech a domech, zejména:
+
+-   data Registru sčítacích obvodů a budov ([RSO](https://www.czso.cz/csu/rso/registr_scitacich_obvodu "https://www.czso.cz/csu/rso/registr_scitacich_obvodu")) včetně údajů Technicko-ekonomických parametrů budov (TEP): využití těchto dat je poskytovatelem dat zpoplatněno;
+
+-   data o transakcích nemovitostí od subjektů poskytujících tato data. Struktura datového souboru je definována dále v příloze; licenci k používání těchto dat je nutné obdržet od poskytovatelů dat;
+
+-   data o plošných parametrech bytů ze SLDB. Licenci k používání dat je nutné získat od správce dat Českého statistického úřadu (ČSÚ).
+
+Struktura a formát výše uvedených údajů bytů a domů je uveden dále v el.příloze
+
+Do složky `verejne_statky_orig` je nutné vložit původní geodata o území ve formátu shape, na základě kterých software počítá dle zvolených metrik jednotlivé proměnné, a ty poté ukládá do složky `verejne_statky_stav`, případně `verejne_statky_alt`.
+
+V případě, kdy jsou proměnné již vypočítané, postačí, když ve složce `verejne_statky_orig` bude soubor s názvem `OKRESY`, který je volně ke stažení z webových stránek [val4plan](http://val4plan.cz "http://val4plan.cz").
+
+Adresář `verejne_statky_stav` obsahuje proměnné o stavu území, jejichž hodnoty byly odvozeny z vrstev uložených ve složce `verejne_statky_orig`. Tyto soubory jsou uloženy ve formátu shape a lze je již spočítané stáhnout z webových stránek [val4plan](http://val4plan.cz "http://val4plan.cz").
+
+Adresář `verejne_statky_alt` obsahuje soubory informací o hypotetickém stavu území, který je porovnáván se současným stavem území obsaženým v adresáři `verejne_statky_stav`. Tyto soubory vznikají modifikací stavových souborů obsahujích veřejný statek, který je modifikován. Obvykle se postupuje tak, že soubor, který obsahuje daný veřejný statek obsažený v adresáři `verejne_statky_orig` je modifikován v externím nástroji GIS (např. QGIS nebo ARcGIS) a posléze nahrán do adresáře `verejne_statky_alt`.
+
+Adresář `modely` obsahuje vstupní a výstupní soubory související s vlastními hedonickými modely cen. Vstupním souborem je definice modelu uložená ve výměnném formátu `json`. Příklad definice modelu lze stáhnout z webových stránek [val4plan](http://val4plan.cz "http://val4plan.cz").
+
+Na základě vstupní definice modelu je provedena estimace (odhad) parametrů modelu, například příkazem `get_estimated_model_ols()`. Výstupem je několik souborů, o kterých se zmíníme později. Jedním ze souborů je uložený estimovaný model (serializovaný objekt modelu) v souboru s příponou `.rda`, který lze kdykoliv v budoucnosti načíst zpět do paměti počítače příkazem `load_model()`. Takto uložené modely umožňují provádět predikci změn cen nemovitostí bez nutnosti re-estimovat modely před každým použitím.
+
+Do zbylých adresářů není nutné žádná data předem nahrávat, software do těchto adresářů automaticky ukládá jak dílčí, tak i finální výstupy.
+
+V adresáři `nabidky_byty` budou uloženy údaje o bytech nabízených na trhu nemovitostí s vyhodnocenými proměnnými a doplněnými chybějícími hodnotami proměnných. Tyto údaje poslouží k estimaci hedonických modelů.
+
+V adresáři `synteticke_byty` budou uloženy údaje o syntetických bytech, které se nalézají na hodnoceném území s vyhodnocenými proměnnými a doplněnými chybějícími hodnotami proměnných. Tyto údaje poslouží k predikci cen nemovitostí.
+
+Do adresáře `predikce` budou uložené predikované údaje o cenách nemovitostí.
+
+::: callout-note
+Zjednodušený postup pro predikci
+
+V případě, kdy je záměrem uživatele „pouze“ predikovat ceny nemovitostí, postačuje pouze vložit do složky `verejne_statky_stav` soubor proměnných popisujících stav území, a do adresáře `modely` nahrát estimovaný model uložený v souboru typu `.rda`. Všechny tyto soubory lze stáhnout ze webových stránek [val4plan](http://val4plan.cz "http://val4plan.cz"). V případě, kdy je potřeba vyhodnocovat dopad změny některé z charakteristik, je nutné vrstvu změněné charakteristiky uložit do složky `verejne_statky_alt`.
+:::
+
+Výzkumy hedonických cen obecně ukazují, že dopady veřejných statků na byty v bytových domech se liší od dopadů na byty v rodinných domech. Z toho důvodu budou v uvedených příkladech vytvořeny specifické modely pro každý segment bytového fondu. Cílem je ukázat možnosti a postupy rozdělení (segmentace) vzorku nemovitostí s cílem aplikovat specifické modely pro jednotlivé segmenty.
+
+### Příprava vzorku údajů o nabízených bytech k prodeji {#Priprava_dat}
+
+::: callout-note
+Přípravu vzorků provádíme pouze tehdy, pokud již takový soubor nebyl dříve vytvořen. Vytvoření souboru a doplnění chybějících hodnot je časově velice náročné, doba výpočtu se může pohybovat až v řádu desítek hodin. V případě, kdy soubor byl již vytvořen, lze tento krok přeskočit a soubor načíst přímo z úložiště, viz zde.
+:::
+
+Obvykle je nutné nejdříve vyhodnotit proměnné z hlediska stavu území. Nastavení na hodnocení stavu území se provádí voláním funkce:
+
+`set_proces_stav()`
+
+V tomto nastavení bude program připravovat podklady pro základní scénář, který representuje (nebo je prohlášen) za současný stav. Aplikace bude ukládat vyhodnocené proměnné do základního scénáře `verejne_statky_stav`.
+
+V tomto kroku se provádí dvě operace:
+
+1.  načtení souboru nabízených bytů
+
+2.  doplnění proměnných a chybějících hodnot v tomto souboru
+
+#### Načtení souboru nabízených bytů
+
+Následujícím příkazem je do paměti načten soubor nabízených bytů v bytových domech:
+
+`nabidky_bd = get_nab_byty_prodej()`
+
+Objekt `nabidky_bd` obsahuje vlastní charakteristiky bytů uvedených v nabídkách bytů a připojených údajů *RSO*. Tento soubor má ale velké množství chybějících hodnot a hlavně neobsahuje celou řadu údajů o okolí bytů. Tyto údaje údaje doplníme v následujícím kroku.
+
+Obdobně postupujeme při načítání nabízených bytů v segmentu rodinných domů:
+
+`nabidky_rd = get_nab_domy_prodej()`
+
+#### Doplnění proměnných a chybějících hodnot v tomto souboru
+
+Výpočet charakteristik okolí bytů provádí funkce `impute_byty()`. Tato funkce pro každý byt vyhodnotí všechny proměnné popisující okolí a u všech proměnných doplní případné chybějící hodnoty.
+
+Doplnění všech proměnných ke všem pozorováním může na běžném počítači trvat až 60 hodin. Proto se komplexní evaluace všech proměnných provádí pouze v nejnutnějším případě, zejména, pokud jsou k dispozici nová data nabídek bytů na trhu. Seznam proměnných, které mají být aktualizované, je uložen v souboru formátu `json` v adresáři admin. Zde je uveden příklad souboru, který obsahuje kompletní výčet proměnných.
+
+Častější bude potřeba aktualizovat pouze jednu nebo několik málo proměnných a ostatní ponechat nezměněné. V takovém případě výše uvedený seznam proměnných zúžíme pouze na ty, které chceme aktualizovat Funkce poté přepočítá pouze ty proměnné, které jsou uvedeny v seznamu a u ostatních proměnných ponechá původní hodnoty.
+
+Kromě snížení počtu proměnných lze také zmenšit vzorek nabízených bytů. Velikost souboru se určuje parametrem `sample_size`. Pokud uvedeme `sample_size = 0`, bude vyhodnocen celý původní soubor bytů.
+
+Posledním atributem funkce je název souboru typu `.rds`, do kterého bude uložen vyhodnocený a doplněný soubor bytů k pozdějšímu požití. Tento soubor bude automaticky uložen v adresáři `nabidky_byty`.
+
+Zde je příkaz se všemi parametry:
+
+`nabidky_bd = impute_byty(nabidky_bd, sample_size = 0, name_json_seznam_promennych = "seznam_promennych", synthetic = F, "nabidky_bd")`
+
+Obdobně použijeme příkaz pro doplnění údajů v souboru bytů v rodinných domech:
+
+`nabidky_rd = impute_byty(nabidky_rd, sample_size = 0, name_json_seznam_promennych = "seznam_promennych", synthetic = F, "nabidky_rd")`
+
+Nyní jsou v adresáři `nabidky_byty` uloženy oba soubory nabízených bytů v obou segmentech realitního trhu. Tyto soubory budou později nahrány do paměti a použity pro výběr vzorku pro účely estimace modelů. Pokud nám uložené soubory vyhovují, nemusíme tyto soubory znovu dle výše uvedeného postupu vytvářet.
+
+### Definice hedonické funkce
+
+Soubory `nabidky_bd` a `nabidky_rd` lze použít pro odhadování hedonických cen jednotlivých charakteristik. Nejdříve je však nutné definovat funkci hedonickou funkci. Hedonická funkce je definována a uložena v zadávacím souboru typu `.json` uloženém v adresáři `modely`. Níže je uveden příklad zadání hedonické funkce:
+
+```         
+{
+"nazev":["Model1"],
+
+"popis":["Zkušební model"],
+
+"zavisle":["log1p(P_nabidka_cena)"],
+
+"nezavisle":[
+    "qq", 
+    "relevel(P_bud_obdobi_vystavby, ref = '1920-1945')",
+    "I(iad_centrum_cas/10)",
+        "I(vhd_centrum_cas/10)",
+        "log1p(P_nabidka_plochauzitna)",
+        "balcony",
+        "parking_space",
+        "elevator",
+        "garage",
+        "terrace",
+        "panel",
+        "I(P_dist_min_zel<100)",
+        "log1p(I(P_dist_min_zs/1000))",
+        "log1p(I(P_dist_min_zdrav/1000))",
+        "log1p(I(P_dist_min_obchod_centrum/1000))",
+        "I(P_dist_min_nemocnice<600)",
+    "I(P_dist_min_silnice<100)",
+        "I(pc_park_600/9)",
+        "I(pc_orna_600/9)",
+        "I(pc_les_600/9)",
+        "nadan",
+        "I(P_near_metro_dist<800)",
+        "I(P_near_bus_dist<800)",
+        "I(P_near_tram_dist<800)",
+        "I(P_near_train_dist<800)",
+        "I(P_znecisteni_nox)",
+        "P_podil_vs_zsj",
+        "P_zahrada",
+        "I(P_obytna_hustota_zsj/100)"
+]
+}
+```
+
+V zadávacím souboru je kromě definice funkce (závisle a nezávisle proměnných) rovněž nutné uvést název a popis modelu. Přímo v zadávacím souboru lze také provést základní transformace proměnných, například:
+
+-   dělení obytné hustoty konstantou: `"I(P_obytna_hustota_zsj/100)"`
+
+-   transformace z kontiuální proměnné na proměnnnou binární: `"I(P_near_bus_dist<800)"`
+
+Jak je patrné, pro tyto číselné operace platí, že musí být uzavřeny do speciální funkce `I()`.
+
+Pro transformaci proměnných lze použít řadu funkcí, například lze použít funkce přirozeného logaritmu proměnné zvětšené o číslo 1: `log1p(P_nabidka_cena)` (posun proměnné o 1 umožňuje vypočítat logaritmus i pro nulové hodnoty proměnné).
+
+U kategorických proměnných lze určit, která z kategorií bude referenční: například funkce `relevel(P_bud_obdobi_vystavby, ref = '1920-1945')`, určuje kategorii `'1920-1945'` kategorické proměnné `P_bud_obdobi_vystavby` jako referenční pro vyhodnocení efektů.
+
+Výše uvedená možnost zadávat funkční transformace proměnných přímo do specifikace modelu přináší zjednodušení v tom, že proměnné není nutné transformovat v původních datech a tím zbytečně data zmnožovat a znepřehledňovat. Provádění transformací až při zadání konkrétního modelu usnadňuje experimentování s množstvím alternativních specifikací hedonické funkce a zároveň přehledně dokumentuje proces hledání optimální funkce a modelu.
+
+Z výše uvedeného vyplývá, že uživatel může vytvářet libovolný počet alternativních specifikací hedonických funkcí uložených v různě nazvaných souborech typu `.json`. Pro načtení do *val4plan* musí být tyto soubory vždy uloženy v adresáři `modely`.
+
+Pro vytvoření prvního základního modelu načteme z adresáře modely například soubor `m_nab_bd.json` a vytvoříme objekt modelu dle následujícícho příkazu:
+
+`m_formula_bd = load_formula("m_nab_bd")`
+
+Obdobným způsobem vytvoříme hedonickou funkci pro segment bytů v rodinných domech ze souboru "m_nab_rd".
+
+`m_formula_rd = load_formula("m_nab_rd")`
+
+Opět v názvu souboru neuvádíme příponu `.json`.
+
+### Příprava vzorku dat pro estimaci modelu
+
+Pro estimaci modelu budeme také potřebovat vzorek nabízených bytů, který vytvoříme ze souboru nabízených bytů vytvořených v [předchozí části](#Priprava_dat).
+
+Načtení souboru nabídek bytů v bytových domech provedeme příkazem `nabidky_bd`, který nahraje soubor `nabidky_bd` uloženého v adresáři `nabídky_byty` do paměti. Soubor má formát `.rds`, ale ten se při zadávání příkazu neuvádí.
+
+`nabidky_bd = load_byty("nabidky_byty", "nabidky_bd", sample_size = 0)`
+
+Atribut `sample_size` umožňuje do paměti nahrát pouze určitý počet údajů, zde je ale nastavena výchozí hodnota 0, která znamená, že budou použity všechny údaje.
+
+Řada záznamů bytů obsahuje ceny, které jsou odchýlené od průměrných hodnot. Tyto záznamy mohou zkreslovat odhad hedonických cen a jsou proto ze vstupních dat odstraněny příkazem `filter_price_outliers_byty`:
+
+`nabidky_bd = filter_price_outliers_byty(nabidky_bd, min_cena = 1500000, max_cena = 20000000, min_cena_m2 = 25000, max_cena_m2 = 150000)`
+
+Tato funkce odstraní odchylné hodnoty menší než je uživatelem stanovená minimální cena (výchozí hodnota 1 500 000) nebo větší než uživatelem stanovená cena (výchozí hodnota 20 000 000) nebo nižší než je uživatelem stanovená minimální cena za m^2^ obytné plochy (výchozí hodnota 25 000) nebo je vyšší než je uživatelem stanovená maximální cena za m^2^ obytné plochy (výchozí hodnota 150 000). Pokud vyhovují výchozí hodnoty funkce, není nutné tyto hodnoty v příkazu uvádět a stačí zadat tuto zkrácenou verzi funkce:
+
+`nabidky_bd = filter_price_outliers_byty(nabidky_bd)`
+
+Obdobně nahrajeme do paměti soubor nabízených bytů v rodinných domech
+
+`nabidky_rd = load_byty("nabidky_byty", "nabidky_rd", sample_size = 0)`
+
+a odstraníme odchylné hodnoty.
+
+`nabidky_rd = filter_price_outliers_domy(nabidky_rd)`
+
+::: callout-note
+Pozor, příkaz filter_price_outliers_domy(), který odstraňuje odchylné hodnoty u bytů v rodiných domech, má nastavené odlišné výchozí hodnoty oproti bytům v bytových domech: minimální cena 3 000 000, maximální cena 20 000 000, minimální cena za m2 obytné plochy 25 000, maximální cena za m2 obytné plochy 150 000. Pokud nám tyto výchozí hodnoty vyhovují, není potřeba je v příkazu zadávat. Parametry příkazu jsou obdobné příkazu pro byty v bytových domech: `filter_price_outliers_byty()`.
+:::
+
+### Estimace základního modelu
+
+Nejdříve si ukážeme estimaci parametrů základního neprostorového modelu *OLS (Ordinary Least Squre)*. Estimace (a fakticky vytvoření modelu) se provádí funkcí `estimate_model_ols()`, která jako argument přijímá objekt hedonické funkce, zde `m_formula`, vzorek bytů nabízených na realitním trhu, zde `nabidky_bd` a název modelu, a zároveň souboru, ve kterém bude estimovaný model uložen, zde `model_ols_bd`.
+
+`model_ols_bd = estimate_model_ols(m_formula, nabidky_bd, "model_ols_bd")`
+
+Estimovaný model bude automaticky uložen v adresáři `modely`.
+
+Estimační funkce má několik výstupů. Kromě vlastního objektu representujícího model, zde `model_ols_bd`, ukládá estimační funkce do adresáře `modely` několik dalších souborů:
+
+-   `nazevmodelu.html`, ve které je tabulka odhadů koeficientů jednotlivých proměnných s uvedením intervalu spolehlivosti na hladině spolehlivosti 95%;
+
+-   `nazevmodelu_diagnostics.txt`, který presentuje řadu testů kvality modelu, např. *test normality odchylek modelu*, *test heteroskedasticity (Studentized Breusch-Pagan test)* nebo *Reset test*, který ukazuje na nelineární vztahy mezi závisle a nezávisle proměnnými;
+
+-   `nazevmodelu_basic_diagnostics.png`, který ukazuje čtyři základní grafy: *Residuals vs Fitted* umožňuje ověřit *homoskedasticitu a linearitu*, *Q-Q Residuals* ověřuje, zda mají odchylky modelu normální rozdělení, *Scale-Location* ověřuje *homoskedasticitu* a *Residuals vs Leverage* pomáhá identifikovat vlivné (influential) hodnoty;
+
+-   `nazevmodelu_residuals.png` ukazuje histogram odchylek modelu.
+
+Obdobným způsobem estimujeme model pro segment bytů v rodinných domech:
+
+`model_ols_rd = estimate_model_ols(m_formula = m_formula_rd, nabidky_byty_doplnene = nabidky_rd, naz_modelu = "model_ols_rd")`
+
+### Estimace modelu s fixními efekty
+
+Výše uvedeným postupem jsme vytvořili *základní regresní model OLS (Ordinary Least-Square)*, který se obvykle využívá k diagnostice prostorových závislostí a jako základní srovnávací model pro hodnocení dalších složitějších modelů. Další, alternativní modely se vytvářejí obdobným postupem. Lze vytvořit neomezené množství alternativních modelů a ty mezi sebou porovnávat.
+
+Například lze vytvořit model fixních efektů, který eliminuje velkou část heterogenity charakteristik území. Model *fixních efektů* vyhodnocuje průměrné efekty charakteristik (intercepty) pro jednotlivá katastrální území na území hl. m. Praha a pro jednotlivé obce mimo hl. m. Praha. K tomu účelu slouží indikátorová proměnná `ku_obec`, která je přidaná do seznamu proměnných v zadávacím souboru. Soubor `m_nab_bd_fe_dist_centre.json` v adresáři modely ukazuje příklad zadání modelu s fixními efekty. Tuto specifikaci načteme do paměti:
+
+`m_formula_fe = load_formula("m_nab_bd_fe")`
+
+Pro estimaci modelu se volá stejná estimační funkce, jako v případě předešlého modelu *OLS* (stále se jedná o Ordinary Least Square model, tentokrát pouze s přidanou indikátorovou proměnnou pro identifikaci katastráního území, ve kterém se nachází byt):
+
+`model_ols_fe_bd = estimate_model_ols(m_formula = m_formula_fe, nabidky_byty_doplnene = nabidky_bd, naz_modelu = "model_ols_fe_bd")`
+
+Model využívá stejný vzorek nabízených bytů, jako základní model *OLS*. Proto jako argument funkce zadáme objekt `nabidky_bd`. Pokud tento objekt máme stále v paměti, potom se vzorek bytů nemusí nahrávat do paměti.
+
+Nyní jsme vytvořili dva modely a lze je porovnat, jak na úrovni jednotlivých koeficientů, tak na úrovni obecných diagnostik. Pro porovnání obou modelů použijeme funkci `summarize_two_models()`:
+
+`summarize_two_models("OLS and FE modely_bd", model_ols_bd, model_ols_fe_bd)`
+
+Jako první argument funkce uvedeme text názvu souboru, který bude ve formátu `.html` uložen v adresáři `modely`. Další dva argumenty jsou objekty obou vytvořených modelů. V souboru je tabulka <mark>(XXXX odkaz na přílohu, soubor OLS and FE modely_bd.html)</mark>, která ukazuje odhady efektů jednotlivých proměnných na závisle proměnnou. V závorce je uveden interval spolehlivosti na hladině spolehlivosti 95%.
+
+Obdobně vytvoříme model s fixními efekty pro segment bytů v rodinných domech:
+
+`m_formula = load_formula("m_nab_rd_fe")`
+
+`model_ols_fe_rd = estimate_model_ols(m_formula = m_formula, nabidky_byty_doplnene = nabidky_rd, naz_modelu = "model_ols_fe_rd")`
+
+`summarize_two_models("OLS and FE modely RD", model_ols_rd, model_ols_fe_rd)`
+
+### Predikce efektů nových stanic plánované trasy metra D
+
+Z předchozích kroků máme k dispozici modely s nastavenými parametry, které můžeme použít pro predikci cen bytů. Pro tuto ukázku vybereme například model `model_ols_fe_bd`. Pokud tento model již není v operační paměti počítače, zle jej načíst do paměti počítače ze souboru `model_ols_fe_bd.rda`, který je uložený v adresáři modely. K tomu lze použít funkci `load_model()`:
+
+`model_ols_fe_bd = load_model("model_ols_fe_bd")`
+
+Model budeme následně používat pro predikci cen všech bytů v okolí zvoleného veřejného statku, zde plánovaných stanic metra D. Budeme predikovat jak stávající rozsah poskytování veřejného statku, kdy nov0 stanice metra D nejsou stále realizovány, tak také alternativní rozsah poskytování veřejného statku s novými stanicemi metra D. Rozdíly v predikovaných cenách bytů representují souhrnný efekt nových stanic metra D.
+
+Před vlastní predikcí cen je však nutné vytvořit soubor všech bytů v okolí nově plánovaných stanic metra D, na kterých budou vyhodnoceny cenové efekty.
+
+Budeme procházet následujícími kroky:
+
+1.  Vytvoření souboru syntetických bytů odrážejících stávající stav
+
+2.  Modifikace souboru syntetických bytů dle alternativního scénáře
+
+3.  Predikce cen nemovitostí
+
+4.  Odvození souhrnného cenového efektu
+
+Stejně, jako v předchozích částech nejdříve vyhodnotíme dopady na segment bytů v bytových domech a poté stručně uvedeme sekvenci příkazů pro segment bytů v rodiných domech.
+
+#### Vytvoření souboru syntetických bytů odrážejících stávající stav
+
+##### Vytvoření syntetických bytů
+
+V prvním kroku je nutné připravit soubor syntetických bytů. Na rozdíl od souboru nabídek bytů v bytových domech, který obsahuje pouze byty nabízené na trhu, se v tomto případě jedná o veškeré byty v bytových domech, které se v území nalézají.
+
+Pro účely predikce cen je každý jednotlivý dům v území representovaný jedním, tzv. syntetickým bytem, jehož charakteristiky nejlépe representují ostatní byty v domě. Veškeré proměnné, které byly vyhodnoceny pro nabízené byty, jsou rovněž vyhodnoceny pro syntetické byty. Syntetické byty navíc obsahují údaj o počtu bytů v domě, který slouží pro agregaci cenových efektů za celý dům.
+
+Soubor syntetických bytů v okolí veřejného statku umožňuje odvodit souhrnné efekty, které vyplývají ze změny rozsahu poskytovaných veřejných statků nebo obecně ze změny určité chrakteristiky okolí.
+
+Objekt syntetické byty (zde `synt_byty`, název objektu lze zvolit libovolně) se vytvoří funkcí `get_synt_byty()`:
+
+`synt_byty = get_synt_byty()`
+
+Následně je objekt syntetických bytů je doplněn o chybějící proměnné a případně o chybějící hodnoty proměnných. Generování syntetických bytů je výpočtově velice náročné. Dobu výpočtu lze radikálně snížit dvěma způsoby:
+
+1.  **Výběr podmnožiny syntetických bytů**: lze vybrat pouze ty syntetické byty, které se nacházejí v okolí veřejného statku, jehož efekty nás zajímají. Protože jsou efekty většiny veřejných statků prostorově omezené, lze rovněž prostorově omezit velikost zkoumaného vzorku syntetických bytů. K omezení vzorku syntetických bytů pouze na okolí daného veřejného statku, případně několika veřejných statků lze použít funkci `get_vzorek_byty_okoli()`.
+
+2.  **Redukce proměnných**: seznam proměnných ve vstupním souboru formátu `json`, který je uložen v adresáři `admin`, lze redukovat pouze na proměnné, které jsou nezbytné k estimaci parametrů modelu.
+
+Začneme výběrem podmnožiny syntetických bytů. Pro účely hodnocení dopadu nových stanic metra vybereme pouze ty syntetické byty, které se nacházejí ve vzdálenosti do 800 m od nových stanic metra D.
+
+Stanice metra jsou z důvodu interoperability s běžnými GIS software uložené v souboru ve formátu shapefile. Softwarový nástroj *val4plan* ale primárně používá nativní datový formát *simple feature* knihovny `sf` a tento formát také zobrazuje pomocí knihovny `tmap`. Pro zobrazení bodů stanic metra uložených v souboru shapefile je nutné tento soubor nejdříve načíst do objektu typu simple feature a teprve poté zobrazit pomocí funkce `map_features()` v interaktivní mapě.
+
+Načtení souborů shapefile se provádí funkcí `load_shapefile()`, do které se zadává název adresáře a název souboru bez přípony:
+
+`stanice_metro = load_shapefile("predikce", "nove_stanice_metro_D")`
+
+Stanice metra lze zobrazit v interaktivní mapě funkcí `map_features()`, jejímž prvním argumentem je název `sf` objektu a druhý argument uvádí, zda se budou zobrazovat body `type = "point"` nebo polygony `type = "polygon"`:
+
+`map_features(stanice, type = "point")`
+
+![Nové stanice metra trasy D](assets/nove_stanice_metra_D.html){#fig-nove-stanice-metro width="100%" height="500px"}
+
+Výběr bytů v okolí stanic provedeme pomocí funkce get_vzorek_byty_okoli(). Jako argument funkce musíme vložit soubor nove_stanice_metro_D formátu shape, který ukazuje polohu budoucích stanic metra trasy D. Tento soubor se nachází v adresáři predikce.
+
+`synt_byty = get_vzorek_byty_okoli("nove_stanice_metro_D", synt_byty, min_vzdalenost = 0, max_vzdalenost = 800)`
+
+Takto prostorově vymezený vzorek bytů je následně vložen do funkce `impute_byty()`, která soubor syntetických bytů doplní o chybějící proměnné a případně doplní chybějící hodnoty proměnných. Stejná funkce se používá i pro doplňování proměnných u souborů nabízených bytů.
+
+`synt_byty = impute_byty(synt_byty, sample_size = 0, name_json_seznam_promennych = "seznam_promennych", synthetic = T, "synt_byty_imputed_metro")`
+
+Funkce umožňuje provést redukci proměnných, protože vyhodnocuje pouze ty proměnné, které jsou uvedené v seznamu proměnných. Seznam proměnných je uložen v souboru typu `.json`, zde s názvem `seznam_promennych` ve složce `admin`. Argument `synthetic` je nastaven na hodnotu `T` (True), protože odplňujeme soubor syntetických bytů. Protože se jedná o výchozí nastavení funkce, není nutné tento argument uvádět.
+
+Funkce ukládá výsledný soubor syntetických bytů do adresáře `synteticke_byty` ve formátu `rda` pod zadaným názvem, zde `synt_byty_imputed_metro`.
+
+Prostorové omezení vzorku hodnocených bytů pouze na okolí zvoleného veřejného statku umožňuje relativně rychle vytvořit byty s vybranou sadou proměnných a vyhodnotit efekty veřejných statků (případně obecně charakteristik prostředí) na tyto byty.
+
+Pokud potřebujeme vzorek bytů a jejich určitou vlastnost zobrazit, lze použít následující funkci:
+
+`map_byty(synt_byty, "P_bud_pocet_bytu_rso")`
+
+Prvním argumentem funkce je objekt třídy Simple feature `sf`, druhým argumentem je proměnná, zde počet bytů v domě.
+
+![Byty, které se nachází ve vzdálenosti 800 m od nových stanic metra D](assets/byty_v_okoli_novych_stanic_metra_D.html){#fig-nove-okoli-stanice width="100%" height="500px"}
+
+#### Modifikace souboru syntetických bytů dle alternativního scénáře
+
+Nyní je k dispozici soubor syntetických bytů s vyhodnocenými proměnnými, které charakterizují stávající stav území a stávající stav veřejných statků. V další fázi bude vytvořen soubor syntetických bytů s vyhodnocenými proměnnými, které odrážejí změny v poskytování veřejných statků, zde nově vybudované stanice metra trasy D.
+
+##### Přepnutí na výpočet alternativních scénářů
+
+V prvním kroku je nutné přepnout režim přípravy dat na zpracovávání dat pro alternativní scénáře.
+
+`set_proces_alt()`
+
+Sdělujeme tím programu, že pro načítání vstupních dat nebude program používat adresář `verejne_statky_stav`, ale bude používat adresář `verejne_statky_alt`.
+
+Nové stanice metra přinesou změny ve dvou proměnných: ve vzdálenosti z bytu ke stanici metra `P_near_metro_dist` a v časové dostupnosti centra Prahy `vhd_centrum_cas`. Pro tvorbu alternativního souboru syntetických bytů je proto nutné změnit pouze tyto dvě proměnné a ostatní proměnné lze ponechat nezměněné.
+
+##### Modifikace proměnné vzdušné vzdálenosti ke stanici metra
+
+Nejdříve přepočítáme proměnnou `P_near_metro_dist`. Vycházíme z vytvořeného stavového souboru syntetických bytů `synt_byty`. Tuto proměnnou uvedeme v souboru json v adresáři admin, v našem případě je název souboru `seznam_promennych_metro.json` a jeho obsah je následující:
+
+```         
+{
+    "promenne_nazvy":[
+        "P_near_metro_dist"
+        ]
+}
+```
+
+K vyhodnocení alternativního souboru bytů využijeme již známou funkci `impute_byty()`. Do této funkce vložíme objekt stavových syntetických bytů, u kterého budeme měnit vybrané proměnné. Dalším argumentem je název výstupního souboru syntetických bytů s upravenou proměnnou nebo proměnnými. V tomto případě nastavíme `sample_size = 0`, protože vzorek syntetických bytů v okolí stanic metra již byl vymezen v předchozím kroku.
+
+`synt_byty_alt = impute_byty(synt_byty, sample_size = 0, name_json_seznam_promennych = "seznam_promennych_metro", synthetic = T, "synt_byty_imputed_metro_alt")`
+
+Tím jsme změnili vzdušnou vzdálenost nemovitostí k nejbližší stanici.
+
+Vzdálenosti k nejbližší stanici metra před realizací a po realizaci nových stanic metra D lze zobrazit pomocí následujících funkcí:
+
+`dist_metro_pred = map_byty(synt_byty, "P_near_metro_dist")`
+
+`dist_metro_po = map_byty(synt_byty_alt, "P_near_metro_dist")`
+
+Prvním argumentem funkcí je sf objekt syntetických bytů, druhým argumentem je proměnná, zde počet bytů v domě.
+
+![Vzdálenosti bytů k nejbližší stanici metra před realizací nových stanic metra D](assets/vzdalenost_k_soucasnym_stanicim_metra.html){#fig-dist-byty-stanice width="100%" height="500px"}

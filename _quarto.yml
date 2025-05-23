@@ -1,0 +1,6 @@
+project:
+  title: "manual"
+  output-dir: docs
+
+editor: visual
+
